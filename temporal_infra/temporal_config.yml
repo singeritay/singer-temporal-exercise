@@ -1,0 +1,8 @@
+production:
+  temporal_server_url: "temporal.production.example:7233"
+development:
+  temporal_server_url: "localhost:7233"
+integration:
+  temporal_server_url: "localhost:7233"
+testing:
+  temporal_server_url: "localhost:7233"

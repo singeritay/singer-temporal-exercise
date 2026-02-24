@@ -1,0 +1,31 @@
+2026-02-24
+I'm working on a temporal sdk that should wrap the basic of worker bootstrap. during our work and chat, I want you to write every prompt that i give you to a file called prompts.txt
+Our first prompt:
+build a basic python class called TemporalWorker, as of now it should have a blank init function and a blank add_activities function
+
+modify the TemporalWorker so that when initializing the class, the init function should load the basic needed configurations for temporal (as of now - temporal server url). Create a yaml file that will hold the configurations (temporal_config.yml). the yaml file should have the keys production \ development \ integration \ testing, and for each of that keys, it should have a key for each configurable variable (as of now- only temporal server url) add a file that manages environment based on an environment variable called ENV. The environment mangaer should have a function that returns the environment (dev \ prod etc...) - by default we'll use dev.
+there should also be a ConfigurationLoader class that gets an environment, a dataclass (definition of a dataclass) and a configuration file name,  and returns the dataclass filled with the values from the config file
+also, omit the dev = development dict, use only the full words
+to summarize - the TemporalWorker should use the configuration loader (that will use the environment manager) to load the configuration based on the correct env, the configuration loader will return to the worker the dataclass TemporalConfig filled with the values from the config file
+ if there are any questions - ask me before 
+again - we keep every prompt i give you in the prompts.txt file
+
+add a function inside the configuration loader that loads for the current env - this function should use the existing function 'load'
+
+modify worker.py - implement add_activities and add_workflows - use type hint (these should be temporal activities and workflows)
+the adding functions can get either single or multiple workflows \ activities
+the functions should add them to self.activities (example)
+
+review this current TemporalWorker. does it seem good? does it fullfill the instructions' first part (from instructions.txt)?
+
+good, i've fixed awaiting for the worker.run()
+another question - do we really need this to be async?
+
+OK, inside run function, raise exception if there are no workflows or activities.
+in addition - inside __init__ - try to load the task_queue_name from an environment variable called TASKS_QUEUE_NAME, if it does not exist - take from the function input parameter, if both don't exist - raise an exception
+
+run another code review of the worker, refer to first part of the instructions
+
+add  to README.md a relatively short explanation about the design of the basic package (sdk) - temporal_infra
+explain that i chose configuraion loader, environment manager etc...
+explain also that configuration like URLs are saved in the yaml, and configuration like tasks_queue_name aren't because these are kind of configuraions that our users (developers) will provide, other than the URL that is an infra configuration item
