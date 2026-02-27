@@ -17,3 +17,9 @@ I've had an iteration in which the TemporalWorker automatically wrapped the func
 by that, I've given the user the option to pass a "plain function", instead of passing a Temporal activity.
 Later, I've understood that the workflow should be built from different activities, not plain function,
 so users will ultimately be required to wrap their functions with activity wrapper.
+
+## Calculator Scope Exclusions
+The following topics are intentionally out of scope for this exercise:
+- minus sign at start of number is not acceptable (except of the first number) (example: `-5 + (2 * -3) ^ 2` will not work. correct way - `-5 + (2 * (-3)) ^ 2`)
+- Division-by-zero is not implemented - I don't raise a valid error to the user (the workflow fails as-is).
+- Input validation for invalid characters is not implemented (unrecognized characters may be ignored by parsing).

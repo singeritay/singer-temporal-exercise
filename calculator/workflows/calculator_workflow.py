@@ -34,16 +34,17 @@ class CalculatorWorkflow:
 
     @staticmethod
     def _find_parenthesis_indexes(elements: List) -> Tuple[int, int]:
-        open_idx = None
         close_idx = elements.index(")")
         for i in range(close_idx - 1, -1, -1):
             if elements[i] == "(":
-                open_idx = i
-        if not open_idx or not close_idx:
-            raise ValueError(f"Bad math expression: mismatched parenthesis")
-        return open_idx, close_idx
+                return i, close_idx
+
+        raise ValueError(f"Bad math expression: mismatched parenthesis")
+
 
     async def _calculate_flat_expression(self, elements: List[str | int | float]):
+        if elements[0] == "-":
+            elements.insert(0, 0.0)
         for op_symbols in [["^"], ["*", "/"], ["+", "-"]]:
             i = 0
             while i < len(elements):
@@ -72,7 +73,7 @@ class CalculatorWorkflow:
     def _split_expression_to_elements(expression: str) -> List[str | float]:
         elements = []
         expression = expression.replace(" ", "")
-        raw_elements = re.findall(r'-?\d+\.?\d*|[\+\-\*\/\^\(\)]', expression)
+        raw_elements = re.findall(r'\d+\.?\d*|[\+\-\*\/\^\(\)]', expression)
         for x in raw_elements:
             if x[0].isdigit() or (len(x) > 1 and x[1].isdigit()):
                 elements.append(float(x))

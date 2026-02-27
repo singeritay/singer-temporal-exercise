@@ -1,6 +1,5 @@
 import asyncio
 import uuid
-from timeit import timeit
 
 from calculator.constants import MathTaskQueue
 from calculator.workflows.calculator_workflow import CalculatorWorkflow
@@ -8,7 +7,7 @@ from temporal_infra import TemporalClient
 
 
 async def get_result():
-    return await TemporalClient().run_workflow(CalculatorWorkflow.run, ["7+5*(3+3)"], id=str(uuid.uuid4()),
+    return await TemporalClient().run_workflow(CalculatorWorkflow.run, ["-5 + (2 * (-3)) ^ 2"], id=str(uuid.uuid4()),
                                                task_queue=MathTaskQueue.ORCHESTRATOR.value)
 
 

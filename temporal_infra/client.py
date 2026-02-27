@@ -1,6 +1,6 @@
 from collections.abc import Awaitable
 from pathlib import Path
-from typing import Optional, Type, Any, Callable, List
+from typing import Optional, Any, Callable, List
 
 from temporalio.client import Client
 
