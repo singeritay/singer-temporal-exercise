@@ -29,3 +29,11 @@ run another code review of the worker, refer to first part of the instructions
 add  to README.md a relatively short explanation about the design of the basic package (sdk) - temporal_infra
 explain that i chose configuraion loader, environment manager etc...
 explain also that configuration like URLs are saved in the yaml, and configuration like tasks_queue_name aren't because these are kind of configuraions that our users (developers) will provide, other than the URL that is an infra configuration item
+
+modify worker.py so that users will be able to pass activities and workflows into the init function (as lists, one list for activtieis, one list for workflows)
+also, modify add_activities and add_workflows functions so that users will just pass the functions (or classes
+
+inside temporal_infra, add a file with a class called TemporalClient
+this class should have an init that loads the configuration in the same way that's done in TemporalWorker, a @property function that's called client, that return a temporal client by the configuration, and a run_workflow function that gets the client and executes a temporal workflow
+
+why my IDE does not like the calculator_workflow file? it has an error on the parameters of the `await workflow.execute_activity_method`
