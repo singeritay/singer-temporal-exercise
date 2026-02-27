@@ -69,6 +69,13 @@ class CalculatorWorkflow:
         return result
 
     @staticmethod
-    def _split_expression_to_elements(expression: str) -> List[str | int | float]:
+    def _split_expression_to_elements(expression: str) -> List[str | float]:
+        elements = []
         expression = expression.replace(" ", "")
-        return re.findall(r'\d+\.?\d*|[\+\-\*\/\^\(\)]', expression)
+        raw_elements = re.findall(r'-?\d+\.?\d*|[\+\-\*\/\^\(\)]', expression)
+        for x in raw_elements:
+            if x[0].isdigit() or (len(x) > 1 and x[1].isdigit()):
+                elements.append(float(x))
+            else:
+                elements.append(x)
+        return elements

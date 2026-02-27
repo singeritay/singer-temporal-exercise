@@ -37,3 +37,9 @@ inside temporal_infra, add a file with a class called TemporalClient
 this class should have an init that loads the configuration in the same way that's done in TemporalWorker, a @property function that's called client, that return a temporal client by the configuration, and a run_workflow function that gets the client and executes a temporal workflow
 
 why my IDE does not like the calculator_workflow file? it has an error on the parameters of the `await workflow.execute_activity_method`
+
+how do i split the complex expression to multiple actions?
+
+how to treat parentheses?
+
+implement the required functions for the calculator workflow
