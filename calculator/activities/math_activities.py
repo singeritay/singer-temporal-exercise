@@ -6,14 +6,11 @@ from temporalio import activity
 
 @activity.defn
 async def add(a, b):
-    # print("Waiting")
-    # time.sleep(1)
-    await asyncio.sleep(1)
-    # print("finished waiting")
     return a + b
 
 
-def subtract(a, b):
+@activity.defn
+async def subtract(a, b):
     return a - b
 
 
