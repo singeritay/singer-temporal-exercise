@@ -1,0 +1,8 @@
+protobuf==6.33.5
+pydantic==2.12.5
+pydantic_core==2.41.5
+PyYAML==6.0.3
+temporalio==1.23.0
+types-protobuf==6.32.1.20260221
+typing-inspection==0.4.2
+typing_extensions==4.15.0

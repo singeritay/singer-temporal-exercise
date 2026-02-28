@@ -1,0 +1,6 @@
+apiVersion: v2
+name: subtract-worker
+description: Helm chart for deploying the subtract-worker Temporal worker.
+type: application
+version: 0.1.0
+appVersion: "1.0.0"

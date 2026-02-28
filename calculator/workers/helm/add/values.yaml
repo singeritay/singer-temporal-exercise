@@ -1,0 +1,36 @@
+replicaCount: 1
+
+image:
+  repository: calculator-worker
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext: {}
+securityContext: {}
+
+env:
+  ENV: development
+  TASKS_QUEUE_NAME: addition-queue
+
+resources: {}
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+command:
+  - python
+  - -m
+  - calculator.workers.math_activities_worker

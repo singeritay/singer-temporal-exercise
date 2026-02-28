@@ -43,3 +43,8 @@ how do i split the complex expression to multiple actions?
 how to treat parentheses?
 
 implement the required functions for the calculator workflow
+
+modify calculator folder - add for each worker inside workers directory all the neccassary helm chart files used to deploy to kubernetes
+
+modify each values.yaml file command to run the same worker (math_activities_worker) except of the orchestrator deployment
+also - add a dockerfile - should contain basic python 312 with installing the requirements from  requirements.txt
