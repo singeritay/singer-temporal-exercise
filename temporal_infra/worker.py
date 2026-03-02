@@ -1,3 +1,4 @@
+import asyncio
 import os
 from collections.abc import Awaitable, Callable, Iterable
 from concurrent.futures import ThreadPoolExecutor
@@ -5,8 +6,10 @@ from pathlib import Path
 from typing import Any, Optional, TypeAlias, Type, List
 
 from temporalio.client import Client
+from temporalio.runtime import PrometheusConfig, Runtime, TelemetryConfig
 from temporalio.worker import Worker
 
+from .logger_provider import TemporalLogger
 from .config_loader import ConfigurationLoader
 from .config_models import TemporalConfig
 
@@ -21,26 +24,54 @@ class TemporalWorker:
             tasks_queue_name: str = None,
             activities: Optional[Iterable[TemporalActivity]] = None,
             workflows: Optional[Iterable[TemporalWorkflow]] = None,
+            use_prometheus_server: bool = False
     ):
         self.config_path = (Path(config_path) if config_path else Path(__file__).with_name("temporal_config.yml"))
         self.config: TemporalConfig = ConfigurationLoader(self.config_path).load_for_current_env(TemporalConfig)
         self.temporal_server_url = self.config.temporal_server_url
+        self.prometheus_bind_address = os.getenv(
+            "TEMPORAL_PROMETHEUS_BIND_ADDRESS",
+            self.config.prometheus_bind_address,
+        ).strip()
+        self.use_prometheus_server = use_prometheus_server
+        if self.use_prometheus_server and not self.prometheus_bind_address:
+            raise ValueError(
+                "Missing Prometheus bind address. Set TEMPORAL_PROMETHEUS_BIND_ADDRESS "
+                "or provide prometheus_bind_address in temporal_config.yml."
+            )
         self.tasks_queue_name = os.getenv("TASKS_QUEUE_NAME", tasks_queue_name)
         if not self.tasks_queue_name:
             raise ValueError("Missing required task queue name. Set TASKS_QUEUE_NAME or pass task_queue_name.")
         self.tasks_queue_name = self.tasks_queue_name.strip()
         self._workflows: List[TemporalWorkflow] = []
         self._activities: List[TemporalActivity] = []
+        self.logger = TemporalLogger(name="temporalio")
+        self.logger.info("Logger initialized for temporalio namespace")
         if activities:
             self.add_activities(*activities)
         if workflows:
             self.add_workflows(*workflows)
 
+    async def _heartbeat(self):
+        while True:
+            self.logger.info("Worker heartbeat: Healthy and polling queue",
+                          extra={"queue": self.tasks_queue_name})
+            await asyncio.sleep(10)
+
     async def run(self):
         if not self._workflows and not self._activities:
             raise ValueError("Cannot run worker without registered workflows or activities.")
-        client = await Client.connect(self.temporal_server_url)
+        runtime = None
+        if self.use_prometheus_server:
+            runtime = Runtime(
+                telemetry=TelemetryConfig(
+                    metrics=PrometheusConfig(bind_address=self.prometheus_bind_address),
+                )
+            )
+        client = await Client.connect(self.temporal_server_url, runtime=runtime)
+        self.logger.info("creating worker...")
         with ThreadPoolExecutor(max_workers=10) as executor:
+            heartbeat_task = asyncio.create_task(self._heartbeat())
             worker = Worker(
                 client=client,
                 task_queue=self.tasks_queue_name,
@@ -48,7 +79,10 @@ class TemporalWorker:
                 activities=self._activities,
                 activity_executor=executor
             )
-            return await worker.run()
+            try:
+                return await worker.run()
+            finally:
+                heartbeat_task.cancel()
 
     def add_activities(self, *activities_to_add: TemporalActivity) -> None:
         if not activities_to_add:

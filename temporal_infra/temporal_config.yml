@@ -1,8 +1,12 @@
 production:
   temporal_server_url: "temporal.production.example:7233"
+  prometheus_bind_address: "0.0.0.0:9000"
 development:
-  temporal_server_url: "temporal-server:7233"
+  temporal_server_url: "localhost:7233"
+  prometheus_bind_address: "0.0.0.0:9000"
 integration:
   temporal_server_url: "temporal-server:7233"
+  prometheus_bind_address: "0.0.0.0:9000"
 testing:
   temporal_server_url: "temporal-server:7233"
+  prometheus_bind_address: "0.0.0.0:9000"
