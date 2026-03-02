@@ -19,7 +19,7 @@ class TemporalLogger:
         self.logger.propagate = False
 
         if not self.logger.handlers:
-            handler = logging.StreamHandler()
+            handler = logging.StreamHandler(stream=sys.stdout)
             handler.setLevel(level)
             handler.setFormatter(logging.Formatter(fmt=log_format, datefmt=date_format, defaults={'extra_text': ''}))
             self.logger.addHandler(handler)
