@@ -1,0 +1,42 @@
+replicaCount: 1
+
+image:
+  repository: temporal-server
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext: {}
+securityContext: {}
+
+service:
+  type: ClusterIP
+  ports:
+    grpc: 7233
+    ui: 8233
+
+resources: {}
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+command:
+  - temporal
+  - server
+  - start-dev
+  - --ip
+  - 0.0.0.0
+  - --db-filename
+  - ./sample_db.db

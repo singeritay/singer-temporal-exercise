@@ -1,8 +1,8 @@
-{{- define "divide-worker.name" -}}
+{{- define "temporal-server.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-{{- define "divide-worker.fullname" -}}
+{{- define "temporal-server.fullname" -}}
 {{- if .Values.fullnameOverride -}}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
@@ -15,22 +15,22 @@
 {{- end -}}
 {{- end -}}
 
-{{- define "divide-worker.labels" -}}
+{{- define "temporal-server.labels" -}}
 helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-app.kubernetes.io/name: {{ include "divide-worker.name" . }}
+app.kubernetes.io/name: {{ include "temporal-server.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 
-{{- define "divide-worker.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "divide-worker.name" . }}
+{{- define "temporal-server.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "temporal-server.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
-{{- define "divide-worker.serviceAccountName" -}}
+{{- define "temporal-server.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create -}}
-{{- default (include "divide-worker.fullname" .) .Values.serviceAccount.name -}}
+{{- default (include "temporal-server.fullname" .) .Values.serviceAccount.name -}}
 {{- else -}}
 {{- default "default" .Values.serviceAccount.name -}}
 {{- end -}}

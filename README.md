@@ -23,3 +23,6 @@ The following topics are intentionally out of scope for this exercise:
 - minus sign at start of number is not acceptable (except of the first number) (example: `-5 + (2 * -3) ^ 2` will not work. correct way - `-5 + (2 * (-3)) ^ 2`)
 - Division-by-zero is not implemented - I don't raise a valid error to the user (the workflow fails as-is).
 - Input validation for invalid characters is not implemented (unrecognized characters may be ignored by parsing).
+
+## How to run?
+1. First

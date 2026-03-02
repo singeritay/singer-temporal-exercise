@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "temporal-server.fullname" . }}
+  labels:
+    {{- include "temporal-server.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  selector:
+    {{- include "temporal-server.selectorLabels" . | nindent 4 }}
+  ports:
+    - name: grpc
+      port: {{ .Values.service.ports.grpc }}
+      targetPort: grpc
+      protocol: TCP
+    - name: ui
+      port: {{ .Values.service.ports.ui }}
+      targetPort: ui
+      protocol: TCP
