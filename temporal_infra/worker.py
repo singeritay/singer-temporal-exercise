@@ -61,13 +61,7 @@ class TemporalWorker:
     async def run(self):
         if not self._workflows and not self._activities:
             raise ValueError("Cannot run worker without registered workflows or activities.")
-        runtime = None
-        if self.use_prometheus_server:
-            runtime = Runtime(
-                telemetry=TelemetryConfig(
-                    metrics=PrometheusConfig(bind_address=self.prometheus_bind_address),
-                )
-            )
+        runtime = self._get_runtime()
         client = await Client.connect(self.temporal_server_url, runtime=runtime)
         self.logger.info("creating worker...")
         with ThreadPoolExecutor(max_workers=10) as executor:
@@ -83,6 +77,15 @@ class TemporalWorker:
                 return await worker.run()
             finally:
                 heartbeat_task.cancel()
+
+    def _get_runtime(self) -> Optional[Runtime]:
+        if self.use_prometheus_server:
+            return Runtime(
+                telemetry=TelemetryConfig(
+                    metrics=PrometheusConfig(bind_address=self.prometheus_bind_address),
+                )
+            )
+        return None
 
     def add_activities(self, *activities_to_add: TemporalActivity) -> None:
         if not activities_to_add:

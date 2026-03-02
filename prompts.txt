@@ -66,3 +66,6 @@ change it to be in the configuration file (also allow using environment variable
 
 modify the logger provider that in each log I'll see all the extra (as dict), i want to see it in my console
 show the extra only if it has data
+
+change the log message to alive, not healthy.
+also - provide a readiness probe, that will log only if the worker truely works properly
