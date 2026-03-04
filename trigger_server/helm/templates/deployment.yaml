@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "temporal-server.fullname" . }}
+  name: {{ include "trigger-server.fullname" . }}
   labels:
-    {{- include "temporal-server.labels" . | nindent 4 }}
+    {{- include "trigger-server.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "temporal-server.selectorLabels" . | nindent 6 }}
+      {{- include "trigger-server.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "temporal-server.selectorLabels" . | nindent 8 }}
+        {{- include "trigger-server.selectorLabels" . | nindent 8 }}
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -25,11 +25,11 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "temporal-server.serviceAccountName" . }}
+      serviceAccountName: {{ include "trigger-server.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ include "temporal-server.name" . }}
+        - name: {{ include "trigger-server.name" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
@@ -38,11 +38,8 @@ spec:
             - name: ENV
               value: {{ .Values.env.ENV | quote }}
           ports:
-            - name: grpc
-              containerPort: {{ .Values.service.ports.grpc }}
-              protocol: TCP
-            - name: ui
-              containerPort: {{ .Values.service.ports.ui }}
+            - name: http
+              containerPort: {{ .Values.service.port }}
               protocol: TCP
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}

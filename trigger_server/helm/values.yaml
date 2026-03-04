@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: calculator-worker
+  repository: trigger-server
   pullPolicy: IfNotPresent
   tag: "latest"
 
@@ -22,7 +22,11 @@ securityContext: {}
 
 env:
   ENV: integration
-  TASKS_QUEUE_NAME: subtraction-queue
+
+service:
+  type: NodePort
+  port: 8000
+  nodePort: 30080
 
 resources: {}
 
@@ -33,4 +37,9 @@ affinity: {}
 command:
   - python
   - -m
-  - calculator.workers.math_activities_worker
+  - uvicorn
+  - trigger_server.main:app
+  - --host
+  - 0.0.0.0
+  - --port
+  - "8000"

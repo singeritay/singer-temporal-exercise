@@ -69,3 +69,7 @@ show the extra only if it has data
 
 change the log message to alive, not healthy.
 also - provide a readiness probe, that will log only if the worker truely works properly
+
+add to deploy_script.sh scripts to deploy all the workers (inside calculator/workers), using helm do it in a way that if the deployment already exist, it will upgrade it
+
+add to the project a whole new server (called trigger_server). it should be a tiny FastApi server that has a route to calculate complex expressions using temporal. the route GET /calculate should get a string expression and return the result. use the same logic that I've implemented in trigger.py (using TemporalClient etc...) build dockerfile and helm to this server, and make sure it will be reachable from outside of the cluster. ask me questions if something's not clear before implementing

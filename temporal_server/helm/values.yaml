@@ -20,6 +20,9 @@ podLabels: {}
 podSecurityContext: {}
 securityContext: {}
 
+env:
+  ENV: integration
+
 service:
   type: ClusterIP
   ports:
