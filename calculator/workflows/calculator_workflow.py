@@ -43,7 +43,6 @@ class CalculatorWorkflow:
 
 
     async def _calculate_flat_expression(self, elements: List[str | int | float]):
-        #TODO: handle 2^3^2 order (right to left)
         if elements[0] == "-":
             elements.insert(0, 0.0)
         for op_symbols in [["^"], ["*", "/"], ["+", "-"]]:

@@ -1,5 +1,7 @@
 import asyncio
+import contextlib
 import os
+import signal
 from collections.abc import Awaitable, Callable, Iterable
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
@@ -68,18 +70,46 @@ class TemporalWorker:
                 activities=self._activities,
                 activity_executor=executor
             )
+            worker_task = asyncio.create_task(worker.run())
+            loop = asyncio.get_running_loop()
+
+            def _on_shutdown_signal(sig_name: str) -> None:
+                self.logger.warning(f"Received {sig_name}. Starting shutdown.")
+                if not worker_task.done():
+                    worker_task.cancel()
+
+            registered_signals = self._register_signal_handlers(loop, _on_shutdown_signal)
             try:
                 self.logger.info("Running worker")
-                return await worker.run()
+                return await worker_task
             finally:
                 heartbeat_task.cancel()
-        #TODO: graceful shutdown
+                with contextlib.suppress(asyncio.CancelledError):
+                    await heartbeat_task
+                self._unregister_signal_handlers(loop, registered_signals)
 
     async def _heartbeat(self):
         while True:
             self.logger.info("Worker heartbeat: Healthy and polling queue",
                              extra={"queue": self.tasks_queue_name})
             await asyncio.sleep(10)
+
+    @staticmethod
+    def _register_signal_handlers(loop: asyncio.AbstractEventLoop, on_signal: Callable[[str], None]) -> list[signal.Signals]:
+        registered_signals: list[signal.Signals] = []
+        for shutdown_signal in (signal.SIGINT, signal.SIGTERM):
+            try:
+                loop.add_signal_handler(shutdown_signal, on_signal, shutdown_signal.name)
+                registered_signals.append(shutdown_signal)
+            except (NotImplementedError, RuntimeError):
+                continue
+        return registered_signals
+
+    @staticmethod
+    def _unregister_signal_handlers(loop: asyncio.AbstractEventLoop, registered_signals: list[signal.Signals]) -> None:
+        for registered_signal in registered_signals:
+            with contextlib.suppress(NotImplementedError, RuntimeError):
+                loop.remove_signal_handler(registered_signal)
 
     def add_activities(self, *activities_to_add: TemporalActivity) -> None:
         if not activities_to_add:
