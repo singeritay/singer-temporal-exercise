@@ -1,4 +1,3 @@
-2026-02-24
 I'm working on a temporal sdk that should wrap the basic of worker bootstrap. during our work and chat, I want you to write every prompt that i give you to a file called prompts.txt
 Our first prompt:
 build a basic python class called TemporalWorker, as of now it should have a blank init function and a blank add_activities function
@@ -48,3 +47,29 @@ modify calculator folder - add for each worker inside workers directory all the 
 
 modify each values.yaml file command to run the same worker (math_activities_worker) except of the orchestrator deployment
 also - add a dockerfile - should contain basic python 312 with installing the requirements from  requirements.txt
+
+create another folder in the project - called "temporal_server" that will contain Dockerfile that will run the command - server start-dev --db-filename ./sample_db.db,
+also add the neccassary helm files for deployment of this server
+
+in this chat, add every prompt to prompts.txt
+
+please add inside temporal_infra a logger provider, that will contain a TemporalLogger class. the class should initiate a logger that will have all basic logging functions (info, exception, error, etc...)/
+
+in this chat, add every prompt to prompts.txt
+please add inside temporal_infra a logger provider, that will contain a TemporalLogger class. the class should initiate a logger that will have all basic logging functions (info, exception, error, etc...)
+the class should do all the configuration for the logger
+add an option in the init functions to add extra (dict) that will append to each log
+also
+
+inside the worker (temporal_infra), while running the worker, enable prometheus probes
+change it to be in the configuration file (also allow using environment variable if exists, but if not exists - use the configuration file, not just a constant)
+
+modify the logger provider that in each log I'll see all the extra (as dict), i want to see it in my console
+show the extra only if it has data
+
+change the log message to alive, not healthy.
+also - provide a readiness probe, that will log only if the worker truely works properly
+
+add to deploy_script.sh scripts to deploy all the workers (inside calculator/workers), using helm do it in a way that if the deployment already exist, it will upgrade it
+
+add to the project a whole new server (called trigger_server). it should be a tiny FastApi server that has a route to calculate complex expressions using temporal. the route GET /calculate should get a string expression and return the result. use the same logic that I've implemented in trigger.py (using TemporalClient etc...) build dockerfile and helm to this server, and make sure it will be reachable from outside of the cluster. ask me questions if something's not clear before implementing

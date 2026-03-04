@@ -21,7 +21,7 @@ podSecurityContext: {}
 securityContext: {}
 
 env:
-  ENV: development
+  ENV: integration
   TASKS_QUEUE_NAME: calculator-queue
 
 resources: {}
